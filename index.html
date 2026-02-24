@@ -488,7 +488,11 @@
                     lucide.createIcons();
                     
                     try {
-                        const response = await fetch(fileData.downloadUrl);
+                        const response = await fetch(fileData.downloadUrl, {
+                            headers: {
+                                'ngrok-skip-browser-warning': 'true' // ★ここにも追加！
+                            }
+                        });
                         const blob = await response.blob();
                         const blobUrl = URL.createObjectURL(blob);
                         
