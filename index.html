@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,19 +11,13 @@
     <style>
         /* ドラッグ＆ドロップ時のスタイル */
         .drag-active {
-            border-color: #6366f1 !important;
-            /* indigo-500 */
-            background-color: #e0e7ff !important;
-            /* indigo-50 */
+            border-color: #6366f1 !important; /* indigo-500 */
+            background-color: #e0e7ff !important; /* indigo-50 */
         }
-
         /* 隠す用のクラス */
-        .hidden {
-            display: none !important;
-        }
+        .hidden { display: none !important; }
     </style>
 </head>
-
 <body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col items-center justify-center p-4">
 
     <!-- ヘッダー -->
@@ -44,8 +37,7 @@
         </div>
 
         <!-- ドラッグ＆ドロップエリア -->
-        <div id="dropZone"
-            class="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center cursor-pointer hover:bg-gray-50 transition-colors duration-200">
+        <div id="dropZone" class="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center cursor-pointer hover:bg-gray-50 transition-colors duration-200">
             <div id="uploadPrompt">
                 <i data-lucide="folder-up" class="w-12 h-12 text-gray-400 mx-auto mb-4"></i>
                 <p class="font-medium text-gray-700">クリックしてファイルを選択</p>
@@ -54,8 +46,7 @@
             </div>
             <!-- プレビュー表示エリア -->
             <div id="previewContainer" class="hidden flex flex-col items-center">
-                <div id="previewMedia"
-                    class="w-full max-h-48 rounded-lg overflow-hidden bg-black flex items-center justify-center mb-4">
+                <div id="previewMedia" class="w-full max-h-48 rounded-lg overflow-hidden bg-black flex items-center justify-center mb-4">
                     <!-- 画像または動画がここに表示されます -->
                 </div>
                 <p id="previewFileName" class="text-sm font-medium text-gray-700 truncate w-full"></p>
@@ -67,9 +58,7 @@
         </div>
 
         <!-- アクションボタン -->
-        <button id="uploadBtn"
-            class="w-full mt-6 bg-indigo-600 text-white font-bold py-3 px-4 rounded-xl hover:bg-indigo-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2"
-            disabled>
+        <button id="uploadBtn" class="w-full mt-6 bg-indigo-600 text-white font-bold py-3 px-4 rounded-xl hover:bg-indigo-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2" disabled>
             <i data-lucide="link"></i> 共有リンクを生成する
         </button>
 
@@ -80,15 +69,12 @@
                     <i data-lucide="check-circle" class="w-4 h-4"></i> リンクの生成が完了しました！
                 </p>
                 <div class="flex items-center gap-2 bg-white rounded-lg border border-gray-200 p-1 pl-3">
-                    <input type="text" id="shareUrlInput"
-                        class="flex-1 bg-transparent text-sm text-gray-600 outline-none" readonly>
-                    <button id="copyBtn"
-                        class="bg-indigo-100 text-indigo-700 hover:bg-indigo-200 p-2 rounded-md transition tooltip-trigger relative">
+                    <input type="text" id="shareUrlInput" class="flex-1 bg-transparent text-sm text-gray-600 outline-none" readonly>
+                    <button id="copyBtn" class="bg-indigo-100 text-indigo-700 hover:bg-indigo-200 p-2 rounded-md transition tooltip-trigger relative">
                         <i data-lucide="copy" class="w-4 h-4"></i>
                     </button>
                 </div>
-                <p id="copyMessage" class="text-xs text-green-600 font-medium mt-2 hidden text-center">クリップボードにコピーしました！
-                </p>
+                <p id="copyMessage" class="text-xs text-green-600 font-medium mt-2 hidden text-center">クリップボードにコピーしました！</p>
             </div>
         </div>
     </div>
@@ -97,8 +83,7 @@
     <!-- ==========================================
          2. ビューアー画面 (リンクを開いた時)
     =========================================== -->
-    <div id="downloadView"
-        class="hidden w-full max-w-3xl bg-white rounded-3xl shadow-xl overflow-hidden transition-all duration-300">
+    <div id="downloadView" class="hidden w-full max-w-3xl bg-white rounded-3xl shadow-xl overflow-hidden transition-all duration-300">
         <div id="viewerLoading" class="p-16 text-center">
             <i data-lucide="loader-2" class="w-10 h-10 text-indigo-500 animate-spin mx-auto mb-4"></i>
             <p class="text-gray-500 font-medium">ファイルを読み込んでいます...</p>
@@ -111,13 +96,13 @@
                     <!-- 画像か動画がここに入ります -->
                 </div>
             </div>
-
+            
             <!-- 情報＆ダウンロードエリア -->
             <div class="w-full md:w-80 bg-white p-6 flex flex-col justify-between border-l border-gray-100">
                 <div>
                     <h3 class="font-bold text-gray-900 text-lg mb-1" id="viewerFileName">ファイル名</h3>
                     <p class="text-sm text-gray-500 mb-6" id="viewerFileSize">サイズ</p>
-
+                    
                     <div class="bg-gray-50 rounded-lg p-4 mb-6">
                         <p class="text-xs text-gray-500 mb-1">アップロード日時</p>
                         <p class="text-sm font-medium text-gray-700" id="viewerDate">--</p>
@@ -125,12 +110,10 @@
                 </div>
 
                 <div class="space-y-3">
-                    <button id="downloadBtn"
-                        class="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-xl hover:bg-indigo-700 transition duration-200 flex justify-center items-center gap-2 shadow-lg shadow-indigo-200">
+                    <button id="downloadBtn" class="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-xl hover:bg-indigo-700 transition duration-200 flex justify-center items-center gap-2 shadow-lg shadow-indigo-200">
                         <i data-lucide="download"></i> ダウンロード
                     </button>
-                    <a href="?"
-                        class="w-full bg-white border border-gray-300 text-gray-700 font-bold py-3 px-4 rounded-xl hover:bg-gray-50 transition duration-200 flex justify-center items-center gap-2 text-center">
+                    <a href="?" class="w-full bg-white border border-gray-300 text-gray-700 font-bold py-3 px-4 rounded-xl hover:bg-gray-50 transition duration-200 flex justify-center items-center gap-2 text-center">
                         新しくアップロード
                     </a>
                 </div>
@@ -142,8 +125,7 @@
             <i data-lucide="alert-circle" class="w-12 h-12 text-red-400 mx-auto mb-4"></i>
             <h3 class="text-xl font-bold text-gray-900 mb-2">ファイルが見つかりません</h3>
             <p class="text-gray-500 mb-6 text-sm">リンクが間違っているか、ファイルの有効期限が切れています。</p>
-            <a href="?"
-                class="inline-block bg-indigo-600 text-white font-bold py-2 px-6 rounded-xl hover:bg-indigo-700 transition">
+            <a href="?" class="inline-block bg-indigo-600 text-white font-bold py-2 px-6 rounded-xl hover:bg-indigo-700 transition">
                 トップに戻る
             </a>
         </div>
@@ -186,7 +168,7 @@
         // --- DOM要素の取得 ---
         const uploadView = document.getElementById('uploadView');
         const downloadView = document.getElementById('downloadView');
-
+        
         // アップロード関連
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
@@ -230,7 +212,7 @@
         // ==========================================
         // アップロード画面のロジック
         // ==========================================
-
+        
         // クリックでファイル選択
         dropZone.addEventListener('click', (e) => {
             if (e.target !== cancelBtn && !currentFile) {
@@ -264,7 +246,7 @@
         // ファイルが選択された時の処理
         function handleFileSelect(file) {
             // 最大 10GB (10 * 1024 * 1024 * 1024 バイト) に制限を引き上げ
-            const MAX_SIZE = 10 * 1024 * 1024 * 1024;
+            const MAX_SIZE = 10 * 1024 * 1024 * 1024; 
             if (file.size > MAX_SIZE) {
                 alert("申し訳ありません。10GB以下のファイルのみ対応しています。");
                 return;
@@ -339,7 +321,7 @@
                     previewContainer.insertBefore(warn, previewFileName);
                 }
             }
-
+            
             // アイコンの再描画
             lucide.createIcons();
         }
@@ -385,7 +367,10 @@
                 // パソコンのサーバーへPOSTリクエストを送信
                 const response = await fetch(`${BACKEND_URL}/api/upload`, {
                     method: 'POST',
-                    body: formData
+                    body: formData,
+                    headers: {
+                        'ngrok-skip-browser-warning': 'true' // ngrokの警告画面をスキップするパスポート
+                    }
                 });
 
                 if (!response.ok) {
@@ -401,7 +386,7 @@
                 // 結果を表示
                 shareUrlInput.value = shareUrl;
                 resultArea.classList.remove('hidden');
-
+                
                 // ボタンを元に戻す
                 uploadBtn.innerHTML = '<i data-lucide="check"></i> リンク生成完了！';
                 lucide.createIcons();
@@ -419,7 +404,7 @@
         copyBtn.addEventListener('click', () => {
             shareUrlInput.select();
             document.execCommand('copy');
-
+            
             // コピー完了メッセージを表示して数秒で消す
             copyMessage.classList.remove('hidden');
             setTimeout(() => {
@@ -434,8 +419,12 @@
         async function loadSharedFile(id) {
             try {
                 // パソコンのサーバーからファイル情報を取得
-                const response = await fetch(`${BACKEND_URL}/api/files/${id}`);
-
+                const response = await fetch(`${BACKEND_URL}/api/files/${id}`, {
+                    headers: {
+                        'ngrok-skip-browser-warning': 'true' // ngrokの警告画面をスキップするパスポート
+                    }
+                });
+                
                 if (!response.ok) {
                     viewerLoading.classList.add('hidden');
                     viewerError.classList.remove('hidden');
@@ -452,7 +441,7 @@
 
                 viewerFileName.textContent = fileData.name;
                 viewerFileSize.textContent = formatBytes(fileData.size);
-
+                
                 const date = new Date(fileData.timestamp);
                 viewerDate.textContent = date.toLocaleString('ja-JP');
 
@@ -489,7 +478,7 @@
                         `;
                     }
                 }
-
+                
                 lucide.createIcons();
 
                 // ダウンロードボタンの設定
@@ -497,12 +486,12 @@
                     const originalText = downloadBtn.innerHTML;
                     downloadBtn.innerHTML = '<i data-lucide="loader-2" class="animate-spin"></i> 準備中...';
                     lucide.createIcons();
-
+                    
                     try {
                         const response = await fetch(fileData.downloadUrl);
                         const blob = await response.blob();
                         const blobUrl = URL.createObjectURL(blob);
-
+                        
                         const a = document.createElement('a');
                         a.href = blobUrl;
                         a.download = fileData.name;
@@ -528,5 +517,4 @@
         }
     </script>
 </body>
-
 </html>
