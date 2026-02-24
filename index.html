@@ -452,31 +452,60 @@
                 const ext = fileData.name.split('.').pop().toLowerCase();
                 const playableExts = ['mp4', 'webm', 'ogg', 'mov'];
 
-                // メディアの表示 (クラウドのURLから直接読み込む)
-                if (fileData.type.startsWith('image/')) {
-                    const img = document.createElement('img');
-                    img.src = fileData.downloadUrl;
-                    img.className = "max-h-full max-w-full object-contain";
-                    viewerMediaContainer.appendChild(img);
-                } else if (fileData.type.startsWith('video/')) {
-                    if (playableExts.includes(ext)) {
-                        const video = document.createElement('video');
-                        video.src = fileData.downloadUrl;
-                        video.className = "max-h-full max-w-full object-contain";
-                        video.controls = true;
-                        video.playsInline = true;
-                        video.setAttribute('controlsList', 'nofullscreen');
-                        viewerMediaContainer.appendChild(video);
-                    } else {
-                        // ブラウザ再生非対応形式の場合
-                        viewerMediaContainer.innerHTML = `
-                            <div class="flex flex-col items-center justify-center p-6 text-gray-500">
-                                <i data-lucide="file-video" class="w-20 h-20 mb-4 opacity-50"></i>
-                                <span class="text-sm font-medium">このブラウザでは直接再生できません</span>
-                                <span class="text-xs mt-2">ダウンロードしてご確認ください</span>
-                            </div>
-                        `;
+                // メディアの表示
+                // ngrokの警告画面を回避するため、直接srcにURLを入れるのではなく、
+                // fetchでパスポートを渡してデータを取得し、Blob(塊)に変換して表示します
+                try {
+                    // ロード中の表示
+                    viewerMediaContainer.innerHTML = '<i data-lucide="loader-2" class="w-8 h-8 text-gray-400 animate-spin"></i>';
+                    lucide.createIcons();
+
+                    const mediaRes = await fetch(fileData.downloadUrl, {
+                        headers: {
+                            'ngrok-skip-browser-warning': 'true'
+                        }
+                    });
+
+                    if (!mediaRes.ok) throw new Error('プレビュー取得失敗');
+
+                    const mediaBlob = await mediaRes.blob();
+                    const mediaUrl = URL.createObjectURL(mediaBlob);
+                    
+                    viewerMediaContainer.innerHTML = ''; // ロード表示を消す
+
+                    if (fileData.type.startsWith('image/')) {
+                        const img = document.createElement('img');
+                        img.src = mediaUrl;
+                        img.className = "max-h-full max-w-full object-contain";
+                        viewerMediaContainer.appendChild(img);
+                    } else if (fileData.type.startsWith('video/')) {
+                        if (playableExts.includes(ext)) {
+                            const video = document.createElement('video');
+                            video.src = mediaUrl;
+                            video.className = "max-h-full max-w-full object-contain";
+                            video.controls = true;
+                            video.playsInline = true;
+                            video.setAttribute('controlsList', 'nofullscreen');
+                            viewerMediaContainer.appendChild(video);
+                        } else {
+                            // ブラウザ再生非対応形式の場合
+                            viewerMediaContainer.innerHTML = `
+                                <div class="flex flex-col items-center justify-center p-6 text-gray-500 text-center">
+                                    <i data-lucide="file-video" class="w-20 h-20 mb-4 opacity-50 mx-auto"></i>
+                                    <span class="text-sm font-medium text-gray-700">この形式（${ext.toUpperCase()}）は<br>ブラウザで直接再生できません</span>
+                                    <span class="text-xs mt-3 text-gray-500">ダウンロードして、<br>パソコンの動画プレイヤーでご確認ください</span>
+                                </div>
+                            `;
+                        }
                     }
+                } catch (err) {
+                    console.error('プレビューの読み込みエラー:', err);
+                    viewerMediaContainer.innerHTML = `
+                        <div class="text-center text-gray-500">
+                            <i data-lucide="image-off" class="w-12 h-12 mx-auto mb-2 opacity-50"></i>
+                            <p class="text-sm">プレビューを表示できませんでした</p>
+                        </div>
+                    `;
                 }
                 
                 lucide.createIcons();
