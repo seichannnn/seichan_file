@@ -4,17 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DropLink - 簡単ファイル共有</title>
-    <!-- Tailwind CSS (デザイン用) -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons (アイコン用) -->
+    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        /* ドラッグ＆ドロップ時のスタイル */
         .drag-active {
-            border-color: #6366f1 !important; /* indigo-500 */
-            background-color: #e0e7ff !important; /* indigo-50 */
+            border-color: #6366f1 !important;
+            background-color: #e0e7ff !important;
         }
-        /* 隠す用のクラス */
         .hidden { display: none !important; }
     </style>
 </head>
@@ -27,42 +25,32 @@
         </h1>
     </div>
 
-    <!-- ==========================================
-         1. アップロード画面 (トップページ)
-    =========================================== -->
+    <!-- 1. アップロード画面 -->
     <div id="uploadView" class="w-full max-w-lg bg-white rounded-3xl shadow-xl p-6 sm:p-10 transition-all duration-300">
         <div class="text-center mb-8">
             <h2 class="text-2xl font-bold text-gray-900 mb-2">ファイルをアップロード</h2>
             <p class="text-sm text-gray-500">画像や動画を選択して、共有リンクを作成しましょう。</p>
         </div>
 
-        <!-- ドラッグ＆ドロップエリア -->
         <div id="dropZone" class="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center cursor-pointer hover:bg-gray-50 transition-colors duration-200">
             <div id="uploadPrompt">
                 <i data-lucide="folder-up" class="w-12 h-12 text-gray-400 mx-auto mb-4"></i>
                 <p class="font-medium text-gray-700">クリックしてファイルを選択</p>
                 <p class="text-xs text-gray-400 mt-2">または、ここにファイルをドラッグ＆ドロップ</p>
-                <p class="text-xs text-gray-400 mt-1">対応: 画像, 動画 (最大 10GBまで)</p>
             </div>
-            <!-- プレビュー表示エリア -->
             <div id="previewContainer" class="hidden flex flex-col items-center">
-                <div id="previewMedia" class="w-full max-h-48 rounded-lg overflow-hidden bg-black flex items-center justify-center mb-4">
-                    <!-- 画像または動画がここに表示されます -->
-                </div>
+                <div id="previewMedia" class="w-full max-h-48 rounded-lg overflow-hidden bg-black flex items-center justify-center mb-4"></div>
                 <p id="previewFileName" class="text-sm font-medium text-gray-700 truncate w-full"></p>
                 <p id="previewFileSize" class="text-xs text-gray-500 mb-4"></p>
                 <button id="cancelBtn" class="text-sm text-red-500 hover:text-red-700 font-medium">キャンセル</button>
             </div>
-            <!-- 非表示のファイルインプット -->
             <input type="file" id="fileInput" class="hidden" accept="image/*,video/*,.avi">
         </div>
 
-        <!-- アクションボタン -->
         <button id="uploadBtn" class="w-full mt-6 bg-indigo-600 text-white font-bold py-3 px-4 rounded-xl hover:bg-indigo-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2" disabled>
             <i data-lucide="link"></i> 共有リンクを生成する
         </button>
 
-        <!-- リンク生成結果エリア -->
         <div id="resultArea" class="mt-6 hidden animate-fade-in">
             <div class="bg-green-50 border border-green-200 rounded-xl p-4">
                 <p class="text-sm font-bold text-green-700 mb-2 flex items-center gap-1">
@@ -79,10 +67,7 @@
         </div>
     </div>
 
-
-    <!-- ==========================================
-         2. ビューアー画面 (リンクを開いた時)
-    =========================================== -->
+    <!-- 2. ビューアー画面 -->
     <div id="downloadView" class="hidden w-full max-w-3xl bg-white rounded-3xl shadow-xl overflow-hidden transition-all duration-300">
         <div id="viewerLoading" class="p-16 text-center">
             <i data-lucide="loader-2" class="w-10 h-10 text-indigo-500 animate-spin mx-auto mb-4"></i>
@@ -90,25 +75,19 @@
         </div>
 
         <div id="viewerContent" class="hidden flex flex-col md:flex-row h-full max-h-[80vh]">
-            <!-- メディア表示エリア -->
             <div class="flex-1 bg-gray-900 flex items-center justify-center p-4 min-h-[300px] relative">
-                <div id="viewerMediaContainer" class="w-full h-full flex items-center justify-center">
-                    <!-- 画像か動画がここに入ります -->
-                </div>
+                <div id="viewerMediaContainer" class="w-full h-full flex items-center justify-center"></div>
             </div>
             
-            <!-- 情報＆ダウンロードエリア -->
             <div class="w-full md:w-80 bg-white p-6 flex flex-col justify-between border-l border-gray-100">
                 <div>
                     <h3 class="font-bold text-gray-900 text-lg mb-1" id="viewerFileName">ファイル名</h3>
                     <p class="text-sm text-gray-500 mb-6" id="viewerFileSize">サイズ</p>
-                    
                     <div class="bg-gray-50 rounded-lg p-4 mb-6">
                         <p class="text-xs text-gray-500 mb-1">アップロード日時</p>
                         <p class="text-sm font-medium text-gray-700" id="viewerDate">--</p>
                     </div>
                 </div>
-
                 <div class="space-y-3">
                     <button id="downloadBtn" class="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-xl hover:bg-indigo-700 transition duration-200 flex justify-center items-center gap-2 shadow-lg shadow-indigo-200">
                         <i data-lucide="download"></i> ダウンロード
@@ -120,7 +99,6 @@
             </div>
         </div>
 
-        <!-- エラー画面 -->
         <div id="viewerError" class="hidden p-16 text-center">
             <i data-lucide="alert-circle" class="w-12 h-12 text-red-400 mx-auto mb-4"></i>
             <h3 class="text-xl font-bold text-gray-900 mb-2">ファイルが見つかりません</h3>
@@ -132,24 +110,13 @@
     </div>
 
     <script>
-        // アイコンの初期化
         lucide.createIcons();
 
-        // プレビュー環境でのフルスクリーンエラーを抑制する
-        window.addEventListener('unhandledrejection', (event) => {
-            if (event.reason && (event.reason.name === 'TypeError' || (event.reason.message && event.reason.message.toLowerCase().includes('fullscreen')))) {
-                event.preventDefault();
-                console.warn('この環境ではフルスクリーン表示が制限されています。');
-            }
-        });
-
         // ==========================================
-        // 【重要】あなたのパソコンのサーバーURLを設定します
-        // 今回は無制限のLocaltunnelのURLに変更しました！
+        // ★ 最新のLocaltunnel URLに変更しました
         // ==========================================
         const BACKEND_URL = 'https://hot-kids-clap.loca.lt';
 
-        // --- ユーティリティ ---
         function formatBytes(bytes, decimals = 2) {
             if (!+bytes) return '0 Bytes';
             const k = 1024;
@@ -159,16 +126,12 @@
             return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
         }
 
-        // --- 状態管理 ---
         let currentFile = null;
         let currentSafeType = '';
         let objectUrlForPreview = null;
 
-        // --- DOM要素の取得 ---
         const uploadView = document.getElementById('uploadView');
         const downloadView = document.getElementById('downloadView');
-        
-        // アップロード関連
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
         const uploadPrompt = document.getElementById('uploadPrompt');
@@ -183,7 +146,6 @@
         const copyBtn = document.getElementById('copyBtn');
         const copyMessage = document.getElementById('copyMessage');
 
-        // ビューアー関連
         const viewerLoading = document.getElementById('viewerLoading');
         const viewerContent = document.getElementById('viewerContent');
         const viewerError = document.getElementById('viewerError');
@@ -193,9 +155,6 @@
         const viewerDate = document.getElementById('viewerDate');
         const downloadBtn = document.getElementById('downloadBtn');
 
-        // ==========================================
-        // ルーティング処理 (URLのパラメータを見て画面を切り替える)
-        // ==========================================
         const urlParams = new URLSearchParams(window.location.search);
         const fileIdToView = urlParams.get('id');
 
@@ -208,50 +167,26 @@
             downloadView.classList.add('hidden');
         }
 
-        // ==========================================
-        // アップロード画面のロジック
-        // ==========================================
-        
-        // クリックでファイル選択
         dropZone.addEventListener('click', (e) => {
-            if (e.target !== cancelBtn && !currentFile) {
-                fileInput.click();
-            }
+            if (e.target !== cancelBtn && !currentFile) fileInput.click();
         });
 
-        // ドラッグ＆ドロップ対応
         dropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
             if (!currentFile) dropZone.classList.add('drag-active');
         });
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.classList.remove('drag-active');
-        });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-active'));
         dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
             dropZone.classList.remove('drag-active');
-            if (e.dataTransfer.files.length > 0 && !currentFile) {
-                handleFileSelect(e.dataTransfer.files[0]);
-            }
+            if (e.dataTransfer.files.length > 0 && !currentFile) handleFileSelect(e.dataTransfer.files[0]);
         });
 
-        // inputからのファイル選択
         fileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                handleFileSelect(e.target.files[0]);
-            }
+            if (e.target.files.length > 0) handleFileSelect(e.target.files[0]);
         });
 
-        // ファイルが選択された時の処理
         function handleFileSelect(file) {
-            // 最大 10GB (10 * 1024 * 1024 * 1024 バイト) に制限を引き上げ
-            const MAX_SIZE = 10 * 1024 * 1024 * 1024; 
-            if (file.size > MAX_SIZE) {
-                alert("申し訳ありません。10GB以下のファイルのみ対応しています。");
-                return;
-            }
-
-            // ファイルタイプの推測 (MIMEタイプが空になるAVI等の対策)
             let safeType = file.type;
             if (!safeType) {
                 const ext = file.name.split('.').pop().toLowerCase();
@@ -259,7 +194,6 @@
                 else if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) safeType = 'image/' + ext;
             }
 
-            // 画像か動画か簡易チェック
             if (!safeType.startsWith('image/') && !safeType.startsWith('video/')) {
                 alert("画像または動画ファイルのみ対応しています。");
                 return;
@@ -270,22 +204,14 @@
             uploadPrompt.classList.add('hidden');
             previewContainer.classList.remove('hidden');
             uploadBtn.disabled = false;
-            resultArea.classList.add('hidden'); // 前の結果を隠す
-
-            // 以前の警告文があれば削除
-            const oldWarn = document.getElementById('aviWarning');
-            if (oldWarn) oldWarn.remove();
+            resultArea.classList.add('hidden');
 
             previewFileName.textContent = file.name;
             previewFileSize.textContent = formatBytes(file.size);
 
-            // プレビューの表示
             if (objectUrlForPreview) URL.revokeObjectURL(objectUrlForPreview);
             objectUrlForPreview = URL.createObjectURL(file);
-            previewMedia.innerHTML = ''; // クリア
-
-            const ext = file.name.split('.').pop().toLowerCase();
-            const playableExts = ['mp4', 'webm', 'ogg', 'mov'];
+            previewMedia.innerHTML = '';
 
             if (safeType.startsWith('image/')) {
                 const img = document.createElement('img');
@@ -293,45 +219,17 @@
                 img.className = "max-h-48 max-w-full object-contain";
                 previewMedia.appendChild(img);
             } else if (safeType.startsWith('video/')) {
-                if (playableExts.includes(ext)) {
-                    const video = document.createElement('video');
-                    video.src = objectUrlForPreview;
-                    video.className = "max-h-48 max-w-full object-contain";
-                    video.controls = true;
-                    video.playsInline = true;
-                    video.setAttribute('controlsList', 'nofullscreen');
-                    previewMedia.appendChild(video);
-                } else {
-                    // 再生非対応形式（AVI等）の場合
-                    previewMedia.innerHTML = `
-                        <div class="flex flex-col items-center justify-center h-full p-6 text-gray-400">
-                            <i data-lucide="file-video" class="w-12 h-12 mb-2"></i>
-                            <span class="text-xs">プレビュー非対応</span>
-                        </div>
-                    `;
-                }
-
-                // AVIなどはブラウザで再生できないことが多いので注意書きを追加
-                if (!playableExts.includes(ext)) {
-                    const warn = document.createElement('p');
-                    warn.id = 'aviWarning';
-                    warn.className = "text-xs text-yellow-600 mt-2 w-full text-center font-bold";
-                    warn.textContent = "※この形式はブラウザ上で再生できませんが、共有・ダウンロードは可能です。";
-                    previewContainer.insertBefore(warn, previewFileName);
-                }
+                const video = document.createElement('video');
+                video.src = objectUrlForPreview;
+                video.className = "max-h-48 max-w-full object-contain";
+                video.controls = true;
+                previewMedia.appendChild(video);
             }
-            
-            // アイコンの再描画
             lucide.createIcons();
         }
 
-        // キャンセルボタン
         cancelBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            resetUploadArea();
-        });
-
-        function resetUploadArea() {
             currentFile = null;
             currentSafeType = '';
             fileInput.value = '';
@@ -340,194 +238,130 @@
             uploadBtn.disabled = true;
             resultArea.classList.add('hidden');
             if (objectUrlForPreview) URL.revokeObjectURL(objectUrlForPreview);
+        });
 
-            const oldWarn = document.getElementById('aviWarning');
-            if (oldWarn) oldWarn.remove();
-        }
-
-        // 「リンクを生成する」ボタンの処理
         uploadBtn.addEventListener('click', async () => {
             if (!currentFile) return;
 
-            // ボタンをローディング状態に
             const originalText = uploadBtn.innerHTML;
             uploadBtn.innerHTML = '<i data-lucide="loader-2" class="animate-spin"></i> アップロード中...';
             uploadBtn.disabled = true;
             lucide.createIcons();
 
             try {
-                // 送信用データの作成 (FormDataを使います)
                 const formData = new FormData();
                 formData.append('file', currentFile);
                 formData.append('name', currentFile.name);
                 formData.append('type', currentSafeType);
                 formData.append('size', currentFile.size);
 
-                // パソコンのサーバーへPOSTリクエストを送信
+                console.log("アップロード開始:", BACKEND_URL);
+
                 const response = await fetch(`${BACKEND_URL}/api/upload`, {
                     method: 'POST',
                     body: formData,
                     headers: {
-                        'ngrok-skip-browser-warning': 'true', // ngrok用 (念のため残す)
-                        'Bypass-Tunnel-Reminder': 'true'      // ★Localtunnelの警告を回避する合言葉
+                        'Bypass-Tunnel-Reminder': 'true',
+                        'ngrok-skip-browser-warning': 'true'
                     }
                 });
 
                 if (!response.ok) {
-                    throw new Error('サーバーエラー');
+                    // エラーの内容を細かく確認
+                    const errorText = await response.text();
+                    console.error("サーバーからのエラー応答:", errorText);
+                    throw new Error(`サーバーエラー: ${response.status}`);
                 }
 
                 const result = await response.json();
-
-                // 共有URLを生成 (結果のIDを使用)
                 const baseUrl = window.location.href.split('?')[0];
-                const shareUrl = `${baseUrl}?id=${result.id}`;
-
-                // 結果を表示
-                shareUrlInput.value = shareUrl;
+                shareUrlInput.value = `${baseUrl}?id=${result.id}`;
                 resultArea.classList.remove('hidden');
                 
-                // ボタンを元に戻す
                 uploadBtn.innerHTML = '<i data-lucide="check"></i> リンク生成完了！';
                 lucide.createIcons();
 
             } catch (error) {
-                console.error("保存エラー:", error);
-                alert("アップロードに失敗しました。パソコンのサーバーが起動しているか、URLが間違っていないか確認してください。");
+                console.error("致命的なエラー:", error);
+                alert("アップロード失敗。\n①パソコン側のサーバーでCORSエラーが起きている可能性があります。\n②もしくはLocaltunnelのURLが違っているか切断されています。\nF12キーを押してコンソールの赤い文字を確認してみてください。");
                 uploadBtn.innerHTML = originalText;
                 uploadBtn.disabled = false;
                 lucide.createIcons();
             }
         });
 
-        // コピーボタンの処理
         copyBtn.addEventListener('click', () => {
             shareUrlInput.select();
             document.execCommand('copy');
-            
-            // コピー完了メッセージを表示して数秒で消す
             copyMessage.classList.remove('hidden');
-            setTimeout(() => {
-                copyMessage.classList.add('hidden');
-            }, 3000);
+            setTimeout(() => copyMessage.classList.add('hidden'), 3000);
         });
 
-
-        // ==========================================
-        // ビューアー画面のロジック
-        // ==========================================
         async function loadSharedFile(id) {
             try {
-                // パソコンのサーバーからファイル情報を取得
                 const response = await fetch(`${BACKEND_URL}/api/files/${id}`, {
                     headers: {
-                        'ngrok-skip-browser-warning': 'true',
-                        'Bypass-Tunnel-Reminder': 'true' // ★ここにも追加
+                        'Bypass-Tunnel-Reminder': 'true',
+                        'ngrok-skip-browser-warning': 'true'
                     }
                 });
                 
-                if (!response.ok) {
-                    viewerLoading.classList.add('hidden');
-                    viewerError.classList.remove('hidden');
-                    return;
-                }
-
+                if (!response.ok) throw new Error('取得失敗');
                 const fileData = await response.json();
 
                 viewerLoading.classList.add('hidden');
-
-                // 成功：UIにデータをセット
                 viewerContent.classList.remove('hidden');
                 viewerContent.classList.add('flex');
 
                 viewerFileName.textContent = fileData.name;
                 viewerFileSize.textContent = formatBytes(fileData.size);
-                
-                const date = new Date(fileData.timestamp);
-                viewerDate.textContent = date.toLocaleString('ja-JP');
+                viewerDate.textContent = new Date(fileData.timestamp).toLocaleString('ja-JP');
 
-                // 以前の警告文があれば削除
-                const oldViewerWarn = document.getElementById('viewerAviWarning');
-                if (oldViewerWarn) oldViewerWarn.remove();
-
-                const ext = fileData.name.split('.').pop().toLowerCase();
-                const playableExts = ['mp4', 'webm', 'ogg', 'mov'];
-
-                // メディアの表示
-                // ngrokやLocaltunnelの警告画面を回避するため、直接srcにURLを入れるのではなく、
-                // fetchでパスポートを渡してデータを取得し、Blob(塊)に変換して表示します
                 try {
-                    // ロード中の表示
                     viewerMediaContainer.innerHTML = '<i data-lucide="loader-2" class="w-8 h-8 text-gray-400 animate-spin"></i>';
                     lucide.createIcons();
 
                     const mediaRes = await fetch(fileData.downloadUrl, {
                         headers: {
-                            'ngrok-skip-browser-warning': 'true',
-                            'Bypass-Tunnel-Reminder': 'true' // ★ここにも追加
+                            'Bypass-Tunnel-Reminder': 'true',
+                            'ngrok-skip-browser-warning': 'true'
                         }
                     });
-
-                    if (!mediaRes.ok) throw new Error('プレビュー取得失敗');
+                    if (!mediaRes.ok) throw new Error('プレビュー失敗');
 
                     const mediaBlob = await mediaRes.blob();
                     const mediaUrl = URL.createObjectURL(mediaBlob);
                     
-                    viewerMediaContainer.innerHTML = ''; // ロード表示を消す
-
+                    viewerMediaContainer.innerHTML = '';
                     if (fileData.type.startsWith('image/')) {
                         const img = document.createElement('img');
                         img.src = mediaUrl;
                         img.className = "max-h-full max-w-full object-contain";
                         viewerMediaContainer.appendChild(img);
                     } else if (fileData.type.startsWith('video/')) {
-                        if (playableExts.includes(ext)) {
-                            const video = document.createElement('video');
-                            video.src = mediaUrl;
-                            video.className = "max-h-full max-w-full object-contain";
-                            video.controls = true;
-                            video.playsInline = true;
-                            video.setAttribute('controlsList', 'nofullscreen');
-                            viewerMediaContainer.appendChild(video);
-                        } else {
-                            // ブラウザ再生非対応形式の場合
-                            viewerMediaContainer.innerHTML = `
-                                <div class="flex flex-col items-center justify-center p-6 text-gray-500 text-center">
-                                    <i data-lucide="file-video" class="w-20 h-20 mb-4 opacity-50 mx-auto"></i>
-                                    <span class="text-sm font-medium text-gray-700">この形式（${ext.toUpperCase()}）は<br>ブラウザで直接再生できません</span>
-                                    <span class="text-xs mt-3 text-gray-500">ダウンロードして、<br>パソコンの動画プレイヤーでご確認ください</span>
-                                </div>
-                            `;
-                        }
+                        const video = document.createElement('video');
+                        video.src = mediaUrl;
+                        video.className = "max-h-full max-w-full object-contain";
+                        video.controls = true;
+                        viewerMediaContainer.appendChild(video);
                     }
                 } catch (err) {
-                    console.error('プレビューの読み込みエラー:', err);
-                    viewerMediaContainer.innerHTML = `
-                        <div class="text-center text-gray-500">
-                            <i data-lucide="image-off" class="w-12 h-12 mx-auto mb-2 opacity-50"></i>
-                            <p class="text-sm">プレビューを表示できませんでした</p>
-                        </div>
-                    `;
+                    viewerMediaContainer.innerHTML = `<div class="text-center text-gray-500"><p class="text-sm">プレビューを表示できません</p></div>`;
                 }
-                
-                lucide.createIcons();
 
-                // ダウンロードボタンの設定
                 downloadBtn.addEventListener('click', async () => {
                     const originalText = downloadBtn.innerHTML;
                     downloadBtn.innerHTML = '<i data-lucide="loader-2" class="animate-spin"></i> 準備中...';
                     lucide.createIcons();
-                    
                     try {
-                        const response = await fetch(fileData.downloadUrl, {
+                        const dlRes = await fetch(fileData.downloadUrl, {
                             headers: {
-                                'ngrok-skip-browser-warning': 'true',
-                                'Bypass-Tunnel-Reminder': 'true' // ★ここにも追加
+                                'Bypass-Tunnel-Reminder': 'true',
+                                'ngrok-skip-browser-warning': 'true'
                             }
                         });
-                        const blob = await response.blob();
+                        const blob = await dlRes.blob();
                         const blobUrl = URL.createObjectURL(blob);
-                        
                         const a = document.createElement('a');
                         a.href = blobUrl;
                         a.download = fileData.name;
@@ -536,8 +370,6 @@
                         document.body.removeChild(a);
                         URL.revokeObjectURL(blobUrl);
                     } catch (error) {
-                        console.error("ダウンロードエラー", error);
-                        // セキュリティ制限等で失敗した場合は直接開く
                         window.open(fileData.downloadUrl, '_blank');
                     } finally {
                         downloadBtn.innerHTML = originalText;
@@ -546,7 +378,6 @@
                 });
 
             } catch (error) {
-                console.error("読み込みエラー:", error);
                 viewerLoading.classList.add('hidden');
                 viewerError.classList.remove('hidden');
             }
