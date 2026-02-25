@@ -145,10 +145,9 @@
 
         // ==========================================
         // 【重要】あなたのパソコンのサーバーURLを設定します
-        // ※ローカルでテストする時は 'http://localhost:3000'
-        // ※Vercelから通信する時は 'https://xxxx.ngrok-free.app' のようなngrokのURLに変更してください
+        // 今回は無制限のLocaltunnelのURLに変更しました！
         // ==========================================
-        const BACKEND_URL = 'https://signatureless-unbathed-ria.ngrok-free.dev';
+        const BACKEND_URL = 'https://hot-kids-clap.loca.lt';
 
         // --- ユーティリティ ---
         function formatBytes(bytes, decimals = 2) {
@@ -369,7 +368,8 @@
                     method: 'POST',
                     body: formData,
                     headers: {
-                        'ngrok-skip-browser-warning': 'true' // ngrokの警告画面をスキップするパスポート
+                        'ngrok-skip-browser-warning': 'true', // ngrok用 (念のため残す)
+                        'Bypass-Tunnel-Reminder': 'true'      // ★Localtunnelの警告を回避する合言葉
                     }
                 });
 
@@ -421,7 +421,8 @@
                 // パソコンのサーバーからファイル情報を取得
                 const response = await fetch(`${BACKEND_URL}/api/files/${id}`, {
                     headers: {
-                        'ngrok-skip-browser-warning': 'true' // ngrokの警告画面をスキップするパスポート
+                        'ngrok-skip-browser-warning': 'true',
+                        'Bypass-Tunnel-Reminder': 'true' // ★ここにも追加
                     }
                 });
                 
@@ -453,7 +454,7 @@
                 const playableExts = ['mp4', 'webm', 'ogg', 'mov'];
 
                 // メディアの表示
-                // ngrokの警告画面を回避するため、直接srcにURLを入れるのではなく、
+                // ngrokやLocaltunnelの警告画面を回避するため、直接srcにURLを入れるのではなく、
                 // fetchでパスポートを渡してデータを取得し、Blob(塊)に変換して表示します
                 try {
                     // ロード中の表示
@@ -462,7 +463,8 @@
 
                     const mediaRes = await fetch(fileData.downloadUrl, {
                         headers: {
-                            'ngrok-skip-browser-warning': 'true'
+                            'ngrok-skip-browser-warning': 'true',
+                            'Bypass-Tunnel-Reminder': 'true' // ★ここにも追加
                         }
                     });
 
@@ -519,7 +521,8 @@
                     try {
                         const response = await fetch(fileData.downloadUrl, {
                             headers: {
-                                'ngrok-skip-browser-warning': 'true' // ★ここにも追加！
+                                'ngrok-skip-browser-warning': 'true',
+                                'Bypass-Tunnel-Reminder': 'true' // ★ここにも追加
                             }
                         });
                         const blob = await response.blob();
