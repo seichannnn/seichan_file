@@ -113,9 +113,9 @@
         lucide.createIcons();
 
         // ==========================================
-        // ★ 新しい localhost.run のURLに書き換えてください！
+        // ★ localhost.run のURLに更新しました！
         // ==========================================
-        const BACKEND_URL = 'https://ba3e08b17ba41e.lhr.life';
+        const BACKEND_URL = 'https://c42c7d469b9422.lhr.life';
 
         function formatBytes(bytes, decimals = 2) {
             if (!+bytes) return '0 Bytes';
@@ -214,7 +214,6 @@
             objectUrlForPreview = URL.createObjectURL(file);
             previewMedia.innerHTML = '';
 
-            // ★ 修正箇所: ブラウザで安定して再生できる拡張子から 'mov' を外しました
             const playableExts = ['mp4', 'webm', 'ogg'];
 
             if (safeType.startsWith('image/')) {
@@ -230,7 +229,6 @@
                     video.controls = true;
                     previewMedia.appendChild(video);
                 } else {
-                    // movやaviなどはブラウザ再生せずにアイコン表示にする
                     previewMedia.innerHTML = `
                         <div class="flex flex-col items-center justify-center h-full p-6 text-gray-400">
                             <i data-lucide="file-video" class="w-12 h-12 mb-2"></i>
@@ -288,7 +286,7 @@
 
             } catch (error) {
                 console.error("致命的なエラー:", error);
-                alert("アップロード失敗。\n①パソコン側のサーバーでCORSエラーが起きている可能性があります。\n②もしくはLocaltunnelのURLが違っているか切断されています。\nF12キーを押してコンソールの赤い文字を確認してみてください。");
+                alert("アップロード失敗。\n①パソコン側のサーバーでエラーが起きているか、\n②トンネル（localhost.run）が切断されています。\nパソコンの黒い画面を確認してください。");
                 uploadBtn.innerHTML = originalText;
                 uploadBtn.disabled = false;
                 lucide.createIcons();
@@ -318,24 +316,23 @@
                 viewerDate.textContent = new Date(fileData.timestamp).toLocaleString('ja-JP');
 
                 const ext = fileData.name.split('.').pop().toLowerCase();
-                const playableExts = ['mp4', 'webm', 'ogg']; // ★ ここからも 'mov' を外しました
+                const playableExts = ['mp4', 'webm', 'ogg']; 
 
                 try {
                     viewerMediaContainer.innerHTML = '';
                     if (fileData.type.startsWith('image/')) {
                         const img = document.createElement('img');
-                        img.src = fileData.downloadUrl; // ★直接URLを指定！
+                        img.src = fileData.downloadUrl; 
                         img.className = "max-h-full max-w-full object-contain";
                         viewerMediaContainer.appendChild(img);
                     } else if (fileData.type.startsWith('video/')) {
                         if (playableExts.includes(ext)) {
                             const video = document.createElement('video');
-                            video.src = fileData.downloadUrl; // ★直接URLを指定！これで爆速ストリーミング再生！
+                            video.src = fileData.downloadUrl; 
                             video.className = "max-h-full max-w-full object-contain";
                             video.controls = true;
                             viewerMediaContainer.appendChild(video);
                         } else {
-                            // movやaviなどは無理に再生せず、メッセージを表示
                             viewerMediaContainer.innerHTML = `
                                 <div class="flex flex-col items-center justify-center p-6 text-gray-500 text-center">
                                     <i data-lucide="file-video" class="w-20 h-20 mb-4 opacity-50 mx-auto"></i>
