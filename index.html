@@ -44,7 +44,7 @@
                 <p id="previewFileSize" class="text-xs text-gray-500 mb-4"></p>
                 <button id="cancelBtn" class="text-sm text-red-500 hover:text-red-700 font-medium">キャンセル</button>
             </div>
-            <input type="file" id="fileInput" class="hidden" accept="image/*,video/*,.avi">
+            <input type="file" id="fileInput" class="hidden" accept="image/*,video/*,.avi,.mov">
         </div>
 
         <button id="uploadBtn" class="w-full mt-6 bg-indigo-600 text-white font-bold py-3 px-4 rounded-xl hover:bg-indigo-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2" disabled>
@@ -113,9 +113,9 @@
         lucide.createIcons();
 
         // ==========================================
-        // ★ 最新のLocaltunnel URLに変更しました
+        // ★ 新しい Localtunnel URL
         // ==========================================
-        const BACKEND_URL = 'https://legal-pianos-doubt.loca.lt';
+        const BACKEND_URL = 'https://smart-gifts-dress.loca.lt';
 
         function formatBytes(bytes, decimals = 2) {
             if (!+bytes) return '0 Bytes';
@@ -188,8 +188,9 @@
 
         function handleFileSelect(file) {
             let safeType = file.type;
+            const ext = file.name.split('.').pop().toLowerCase();
+            
             if (!safeType) {
-                const ext = file.name.split('.').pop().toLowerCase();
                 if (['mp4', 'avi', 'mov', 'wmv', 'flv', 'mkv'].includes(ext)) safeType = 'video/' + ext;
                 else if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) safeType = 'image/' + ext;
             }
@@ -213,17 +214,30 @@
             objectUrlForPreview = URL.createObjectURL(file);
             previewMedia.innerHTML = '';
 
+            // ★ 修正箇所: ブラウザで安定して再生できる拡張子から 'mov' を外しました
+            const playableExts = ['mp4', 'webm', 'ogg'];
+
             if (safeType.startsWith('image/')) {
                 const img = document.createElement('img');
                 img.src = objectUrlForPreview;
                 img.className = "max-h-48 max-w-full object-contain";
                 previewMedia.appendChild(img);
             } else if (safeType.startsWith('video/')) {
-                const video = document.createElement('video');
-                video.src = objectUrlForPreview;
-                video.className = "max-h-48 max-w-full object-contain";
-                video.controls = true;
-                previewMedia.appendChild(video);
+                if (playableExts.includes(ext)) {
+                    const video = document.createElement('video');
+                    video.src = objectUrlForPreview;
+                    video.className = "max-h-48 max-w-full object-contain";
+                    video.controls = true;
+                    previewMedia.appendChild(video);
+                } else {
+                    // movやaviなどはブラウザ再生せずにアイコン表示にする
+                    previewMedia.innerHTML = `
+                        <div class="flex flex-col items-center justify-center h-full p-6 text-gray-400">
+                            <i data-lucide="file-video" class="w-12 h-12 mb-2"></i>
+                            <span class="text-xs">ブラウザ再生非対応</span>
+                        </div>
+                    `;
+                }
             }
             lucide.createIcons();
         }
@@ -244,7 +258,7 @@
             if (!currentFile) return;
 
             const originalText = uploadBtn.innerHTML;
-            uploadBtn.innerHTML = '<i data-lucide="loader-2" class="animate-spin"></i> アップロード中...';
+            uploadBtn.innerHTML = '<i data-lucide="loader-2" class="animate-spin"></i> 処理中...（動画の場合は変換が行われます）';
             uploadBtn.disabled = true;
             lucide.createIcons();
 
@@ -254,8 +268,6 @@
                 formData.append('name', currentFile.name);
                 formData.append('type', currentSafeType);
                 formData.append('size', currentFile.size);
-
-                console.log("アップロード開始:", BACKEND_URL);
 
                 const response = await fetch(`${BACKEND_URL}/api/upload`, {
                     method: 'POST',
@@ -267,9 +279,6 @@
                 });
 
                 if (!response.ok) {
-                    // エラーの内容を細かく確認
-                    const errorText = await response.text();
-                    console.error("サーバーからのエラー応答:", errorText);
                     throw new Error(`サーバーエラー: ${response.status}`);
                 }
 
@@ -317,6 +326,9 @@
                 viewerFileSize.textContent = formatBytes(fileData.size);
                 viewerDate.textContent = new Date(fileData.timestamp).toLocaleString('ja-JP');
 
+                const ext = fileData.name.split('.').pop().toLowerCase();
+                const playableExts = ['mp4', 'webm', 'ogg']; // ★ ここからも 'mov' を外しました
+
                 try {
                     viewerMediaContainer.innerHTML = '<i data-lucide="loader-2" class="w-8 h-8 text-gray-400 animate-spin"></i>';
                     lucide.createIcons();
@@ -339,11 +351,22 @@
                         img.className = "max-h-full max-w-full object-contain";
                         viewerMediaContainer.appendChild(img);
                     } else if (fileData.type.startsWith('video/')) {
-                        const video = document.createElement('video');
-                        video.src = mediaUrl;
-                        video.className = "max-h-full max-w-full object-contain";
-                        video.controls = true;
-                        viewerMediaContainer.appendChild(video);
+                        if (playableExts.includes(ext)) {
+                            const video = document.createElement('video');
+                            video.src = mediaUrl;
+                            video.className = "max-h-full max-w-full object-contain";
+                            video.controls = true;
+                            viewerMediaContainer.appendChild(video);
+                        } else {
+                            // movやaviなどは無理に再生せず、メッセージを表示
+                            viewerMediaContainer.innerHTML = `
+                                <div class="flex flex-col items-center justify-center p-6 text-gray-500 text-center">
+                                    <i data-lucide="file-video" class="w-20 h-20 mb-4 opacity-50 mx-auto"></i>
+                                    <span class="text-sm font-medium text-gray-700">この形式（${ext.toUpperCase()}）は<br>ブラウザで直接再生できません</span>
+                                    <span class="text-xs mt-3 text-gray-500">ダウンロードして、<br>動画プレイヤーでご確認ください</span>
+                                </div>
+                            `;
+                        }
                     }
                 } catch (err) {
                     viewerMediaContainer.innerHTML = `<div class="text-center text-gray-500"><p class="text-sm">プレビューを表示できません</p></div>`;
