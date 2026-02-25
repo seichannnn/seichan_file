@@ -113,9 +113,9 @@
         lucide.createIcons();
 
         // ==========================================
-        // ★ 新しい Localtunnel URL
+        // ★ 新しい localhost.run のURLに書き換えてください！
         // ==========================================
-        const BACKEND_URL = 'https://smart-gifts-dress.loca.lt';
+        const BACKEND_URL = 'https://ba3e08b17ba41e.lhr.life';
 
         function formatBytes(bytes, decimals = 2) {
             if (!+bytes) return '0 Bytes';
@@ -271,11 +271,7 @@
 
                 const response = await fetch(`${BACKEND_URL}/api/upload`, {
                     method: 'POST',
-                    body: formData,
-                    headers: {
-                        'Bypass-Tunnel-Reminder': 'true',
-                        'ngrok-skip-browser-warning': 'true'
-                    }
+                    body: formData
                 });
 
                 if (!response.ok) {
@@ -308,12 +304,7 @@
 
         async function loadSharedFile(id) {
             try {
-                const response = await fetch(`${BACKEND_URL}/api/files/${id}`, {
-                    headers: {
-                        'Bypass-Tunnel-Reminder': 'true',
-                        'ngrok-skip-browser-warning': 'true'
-                    }
-                });
+                const response = await fetch(`${BACKEND_URL}/api/files/${id}`);
                 
                 if (!response.ok) throw new Error('取得失敗');
                 const fileData = await response.json();
@@ -330,30 +321,16 @@
                 const playableExts = ['mp4', 'webm', 'ogg']; // ★ ここからも 'mov' を外しました
 
                 try {
-                    viewerMediaContainer.innerHTML = '<i data-lucide="loader-2" class="w-8 h-8 text-gray-400 animate-spin"></i>';
-                    lucide.createIcons();
-
-                    const mediaRes = await fetch(fileData.downloadUrl, {
-                        headers: {
-                            'Bypass-Tunnel-Reminder': 'true',
-                            'ngrok-skip-browser-warning': 'true'
-                        }
-                    });
-                    if (!mediaRes.ok) throw new Error('プレビュー失敗');
-
-                    const mediaBlob = await mediaRes.blob();
-                    const mediaUrl = URL.createObjectURL(mediaBlob);
-                    
                     viewerMediaContainer.innerHTML = '';
                     if (fileData.type.startsWith('image/')) {
                         const img = document.createElement('img');
-                        img.src = mediaUrl;
+                        img.src = fileData.downloadUrl; // ★直接URLを指定！
                         img.className = "max-h-full max-w-full object-contain";
                         viewerMediaContainer.appendChild(img);
                     } else if (fileData.type.startsWith('video/')) {
                         if (playableExts.includes(ext)) {
                             const video = document.createElement('video');
-                            video.src = mediaUrl;
+                            video.src = fileData.downloadUrl; // ★直接URLを指定！これで爆速ストリーミング再生！
                             video.className = "max-h-full max-w-full object-contain";
                             video.controls = true;
                             viewerMediaContainer.appendChild(video);
@@ -377,12 +354,7 @@
                     downloadBtn.innerHTML = '<i data-lucide="loader-2" class="animate-spin"></i> 準備中...';
                     lucide.createIcons();
                     try {
-                        const dlRes = await fetch(fileData.downloadUrl, {
-                            headers: {
-                                'Bypass-Tunnel-Reminder': 'true',
-                                'ngrok-skip-browser-warning': 'true'
-                            }
-                        });
+                        const dlRes = await fetch(fileData.downloadUrl);
                         const blob = await dlRes.blob();
                         const blobUrl = URL.createObjectURL(blob);
                         const a = document.createElement('a');
