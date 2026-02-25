@@ -92,6 +92,9 @@
                     <button id="downloadBtn" class="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-xl hover:bg-indigo-700 transition duration-200 flex justify-center items-center gap-2 shadow-lg shadow-indigo-200">
                         <i data-lucide="download"></i> ダウンロード
                     </button>
+                    <button id="downloadOriginalBtn" class="hidden w-full bg-gray-600 text-white font-bold py-3 px-4 rounded-xl hover:bg-gray-700 transition duration-200 flex justify-center items-center gap-2 shadow-lg shadow-gray-200">
+                        <i data-lucide="download"></i> 元ファイルをダウンロード
+                    </button>
                     <a href="?" class="w-full bg-white border border-gray-300 text-gray-700 font-bold py-3 px-4 rounded-xl hover:bg-gray-50 transition duration-200 flex justify-center items-center gap-2 text-center">
                         新しくアップロード
                     </a>
@@ -115,7 +118,7 @@
         // ==========================================
         // ★ localhost.run のURLに更新しました！
         // ==========================================
-        const BACKEND_URL = 'https://c42c7d469b9422.lhr.life';
+        const BACKEND_URL = 'https://ed705b0fb60f09.lhr.life';
 
         function formatBytes(bytes, decimals = 2) {
             if (!+bytes) return '0 Bytes';
@@ -154,6 +157,7 @@
         const viewerFileSize = document.getElementById('viewerFileSize');
         const viewerDate = document.getElementById('viewerDate');
         const downloadBtn = document.getElementById('downloadBtn');
+        const downloadOriginalBtn = document.getElementById('downloadOriginalBtn');
 
         const urlParams = new URLSearchParams(window.location.search);
         const fileIdToView = urlParams.get('id');
@@ -368,6 +372,34 @@
                         lucide.createIcons();
                     }
                 });
+
+                if (fileData.originalDownloadUrl && fileData.originalDownloadUrl !== fileData.downloadUrl) {
+                    downloadOriginalBtn.classList.remove('hidden');
+                    downloadOriginalBtn.addEventListener('click', async () => {
+                        const originalText = downloadOriginalBtn.innerHTML;
+                        downloadOriginalBtn.innerHTML = '<i data-lucide="loader-2" class="animate-spin"></i> 準備中...';
+                        lucide.createIcons();
+                        try {
+                            const dlRes = await fetch(fileData.originalDownloadUrl);
+                            const blob = await dlRes.blob();
+                            const blobUrl = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = blobUrl;
+                            a.download = fileData.originalName || "original_" + fileData.name;
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(blobUrl);
+                        } catch (error) {
+                            window.open(fileData.originalDownloadUrl, '_blank');
+                        } finally {
+                            downloadOriginalBtn.innerHTML = originalText;
+                            lucide.createIcons();
+                        }
+                    });
+                } else {
+                    downloadOriginalBtn.classList.add('hidden');
+                }
 
             } catch (error) {
                 viewerLoading.classList.add('hidden');
