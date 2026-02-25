@@ -116,7 +116,7 @@
         lucide.createIcons();
 
         // ==========================================
-        // ★ localhost.run のURLに更新しました！
+        // ★ localhost.run のURL
         // ==========================================
         const BACKEND_URL = 'https://ed705b0fb60f09.lhr.life';
 
@@ -350,52 +350,29 @@
                     viewerMediaContainer.innerHTML = `<div class="text-center text-gray-500"><p class="text-sm">プレビューを表示できません</p></div>`;
                 }
 
-                downloadBtn.addEventListener('click', async () => {
-                    const originalText = downloadBtn.innerHTML;
-                    downloadBtn.innerHTML = '<i data-lucide="loader-2" class="animate-spin"></i> 準備中...';
-                    lucide.createIcons();
-                    try {
-                        const dlRes = await fetch(fileData.downloadUrl);
-                        const blob = await dlRes.blob();
-                        const blobUrl = URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = blobUrl;
-                        a.download = fileData.name;
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                        URL.revokeObjectURL(blobUrl);
-                    } catch (error) {
-                        window.open(fileData.downloadUrl, '_blank');
-                    } finally {
-                        downloadBtn.innerHTML = originalText;
-                        lucide.createIcons();
-                    }
+                // ★ Blob方式をやめて、直接ブラウザのダウンロード機能で開くように変更！
+                downloadBtn.addEventListener('click', () => {
+                    const a = document.createElement('a');
+                    a.href = fileData.downloadUrl;
+                    a.download = fileData.name;
+                    a.target = '_blank';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
                 });
 
                 if (fileData.originalDownloadUrl && fileData.originalDownloadUrl !== fileData.downloadUrl) {
                     downloadOriginalBtn.classList.remove('hidden');
-                    downloadOriginalBtn.addEventListener('click', async () => {
-                        const originalText = downloadOriginalBtn.innerHTML;
-                        downloadOriginalBtn.innerHTML = '<i data-lucide="loader-2" class="animate-spin"></i> 準備中...';
-                        lucide.createIcons();
-                        try {
-                            const dlRes = await fetch(fileData.originalDownloadUrl);
-                            const blob = await dlRes.blob();
-                            const blobUrl = URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.href = blobUrl;
-                            a.download = fileData.originalName || "original_" + fileData.name;
-                            document.body.appendChild(a);
-                            a.click();
-                            document.body.removeChild(a);
-                            URL.revokeObjectURL(blobUrl);
-                        } catch (error) {
-                            window.open(fileData.originalDownloadUrl, '_blank');
-                        } finally {
-                            downloadOriginalBtn.innerHTML = originalText;
-                            lucide.createIcons();
-                        }
+                    
+                    // ★ こちらも同様に修正！
+                    downloadOriginalBtn.addEventListener('click', () => {
+                        const a = document.createElement('a');
+                        a.href = fileData.originalDownloadUrl;
+                        a.download = fileData.originalName || "original_" + fileData.name;
+                        a.target = '_blank';
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
                     });
                 } else {
                     downloadOriginalBtn.classList.add('hidden');
